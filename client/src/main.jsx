@@ -87,79 +87,81 @@ function isFailure(message) {
 }
 
 function AppShell() {
-  const { user, setUser } = useAuth();
-  const navigate = useNavigate();
-  const logout = async () => {
-    try {
-      await api("/auth/logout", { method: "POST" });
-    } finally {
-      setUser(null);
-      navigate("/login");
-    }
-  };
+  const { user } = useAuth();
   const nav = [
-    ["/", "⌂", "Home"],
-    ["/games", "◉", "Games"],
-    ["/wallet", "◈", "Wallet"],
-    ["/rewards", "✦", "Rewards"],
-    ["/team", "♛", "Team"],
-    ["/profile", "◌", "Me"],
+    ["/", "/images/home.png", "Home"],
+    ["/rewards", "/images/checkIn.png", "Activity"],
+    ["/team", "/images/invite.webp", "Promotion"],
+    ["/wallet", "/images/wallet2.png", "Wallet"],
+    ["/profile", "/images/me2.png", "Account"],
   ];
+
   return (
-    <main className="app-shell">
-      <div className="topbar">
-        <NavLink to="/" className="brand">
+    <main className="legacy-react-shell">
+      <header className="legacy-navbar">
+        <NavLink to="/" className="legacy-navbar-logo" aria-label="Legend Games home">
           <img
-            src="/images/headlogo.png"
+            src="/h5setting_202308141709544lm1.png"
             alt="Legend Games"
             onError={(event) => {
-              event.currentTarget.style.display = "none";
+              event.currentTarget.src = "/images/headlogo.png";
             }}
           />
-          <span>
-            LEGEND
-            <br />
-            <b>GAMES</b>
-          </span>
         </NavLink>
-        <div className="topbar-actions">
-          <NavLink className="balance-chip" to="/wallet">
-            {inr(user.wallet?.total)}
-          </NavLink>
-          <button
-            className="avatar"
-            aria-label="Open profile"
-            onClick={() => navigate("/profile")}
-          >
-            {user.name?.slice(0, 1).toUpperCase() || "L"}
-          </button>
-        </div>
-      </div>
-      <section className="page-content">
+        <div className="legacy-navbar-spacer" />
+        <NavLink
+          to="/notification"
+          className="legacy-notification"
+          aria-label="Notifications"
+          title="Notifications"
+        >
+          <span>♢</span>
+          <i />
+        </NavLink>
+      </header>
+
+      <section className="legacy-page-content">
         <Outlet />
       </section>
-      <nav className="bottom-nav">
-        {nav.map(([to, icon, label]) => (
-          <NavLink key={to} end={to === "/"} to={to}>
-            <span>{icon}</span>
+
+      <NavLink to="/support" className="legacy-customer-service" aria-label="Support">
+        <img
+          src="/assets/png/icon_sevice-8a1f5628.png"
+          alt=""
+          onError={(event) => {
+            event.currentTarget.style.display = "none";
+          }}
+        />
+        <span>?</span>
+      </NavLink>
+
+      <nav className="legacy-tabbar" aria-label="Main navigation">
+        {nav.map(([to, icon, label], index) => (
+          <NavLink
+            key={label}
+            to={to}
+            end={to === "/"}
+            className={index === 2 ? "legacy-tab legacy-tab-promotion" : "legacy-tab"}
+          >
+            <span className="legacy-tab-icon">
+              <img
+                src={icon}
+                alt=""
+                onError={(event) => {
+                  event.currentTarget.style.display = "none";
+                }}
+              />
+              <b>{index === 0 ? "⌂" : index === 1 ? "☆" : index === 2 ? "◆" : index === 3 ? "▣" : "●"}</b>
+            </span>
             <small>{label}</small>
           </NavLink>
         ))}
-        {staffRoles.includes(user.role) && (
-          <NavLink to="/admin">
-            <span>▦</span>
-            <small>Staff</small>
+        {staffRoles.includes(user?.role) && (
+          <NavLink to="/admin" className="legacy-staff-shortcut" title="Staff">
+            ▦
           </NavLink>
         )}
       </nav>
-      <button
-        className="logout-fab"
-        title="Sign out"
-        aria-label="Sign out"
-        onClick={logout}
-      >
-        ↗
-      </button>
     </main>
   );
 }
@@ -442,70 +444,223 @@ function ForgotPasswordPage() {
 function HomePage() {
   const { user } = useAuth();
   const [games, setGames] = useState([]);
+  const [bannerIndex, setBannerIndex] = useState(0);
+
   useEffect(() => {
     api("/games")
-      .then((data) => setGames(data.games))
+      .then((data) => setGames(data.games || []))
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(
+      () => setBannerIndex((current) => (current + 1) % 10),
+      3800,
+    );
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const banners = Array.from({ length: 10 }, (_, index) => `/banner/BANNER_${index + 1}.jpg`);
+  const categoryTiles = [
+    {
+      name: "Popular",
+      icon: "https://ossimg.tirangaagent.com/Tiranga/gamecategory/gamecategory_20240221154444kutg.png",
+      background: "/assets/png/popular-044514e1.png",
+      target: "#popular",
+      wide: true,
+    },
+    {
+      name: "Lottery",
+      icon: "https://ossimg.tirangaagent.com/Tiranga/gamecategory/gamecategory_20240221154540veqj.png",
+      background: "/assets/png/lottery-c0a9176b.png",
+      target: "#lottery",
+      wide: true,
+    },
+    {
+      name: "Casino",
+      icon: "https://ossimg.tirangaagent.com/Tiranga/gamecategory/gamecategory_20240529195514q4uq.png",
+      background: "/assets/png/video-c9dce622.png",
+      target: "/games",
+    },
+    {
+      name: "Slots",
+      icon: "https://ossimg.tirangaagent.com/Tiranga/gamecategory/gamecategory_20240221154558lshk.png",
+      background: "/assets/png/slot-bf07af03.png",
+      target: "/games",
+    },
+    {
+      name: "Sports",
+      icon: "https://ossimg.tirangaagent.com/Tiranga/gamecategory/gamecategory_20240221154454akso.png",
+      background: "/assets/png/sport-ac79bf87.png",
+      target: "/games",
+    },
+    {
+      name: "Rummy",
+      icon: "https://ossimg.tirangaagent.com/Tiranga/gamecategory/gamecategory_202404151616441889.png",
+      background: "/assets/png/chess-9c4d1dff.png",
+      target: "/games",
+    },
+    {
+      name: "Fishing",
+      icon: "https://ossimg.tirangaagent.com/Tiranga/gamecategory/gamecategory_20240221164829vcfa.png",
+      background: "/assets/png/fish-a70df76d.png",
+      target: "/games",
+    },
+    {
+      name: "Original",
+      icon: "https://ossimg.tirangaagent.com/Tiranga/gamecategory/gamecategory_20240415161436vabi.png",
+      background: "/assets/png/flash-eac62fa4.png",
+      target: "/games",
+    },
+  ];
+
+  const findRoute = (terms) => {
+    const match = games.find((game) =>
+      terms.some((term) => game.name?.toLowerCase().includes(term)),
+    );
+    return match ? `/games/${match.id}` : "/games";
+  };
+
+  const lotteryGames = [
+    {
+      name: "Win Go",
+      image: "https://ossimg.tirangaagent.com/Tiranga/lotterycategory/lotterycategory_20240124125544jt65.png",
+      route: findRoute(["win go", "wingo"]),
+      tint: "rgba(147, 10, 161, 0.52)",
+    },
+    {
+      name: "K3",
+      image: "https://ossimg.tirangaagent.com/Tiranga/lotterycategory/lotterycategory_20240124125551se9i.png",
+      route: findRoute(["k3"]),
+      tint: "rgba(155, 63, 63, 0.52)",
+    },
+    {
+      name: "5D",
+      image: "https://ossimg.tirangaagent.com/Tiranga/lotterycategory/lotterycategory_20240124125558slo1.png",
+      route: findRoute(["5d", "five"]),
+      tint: "rgba(255, 0, 0, 0.52)",
+    },
+    {
+      name: "Trx Win Go",
+      image: "https://ossimg.tirangaagent.com/Tiranga/lotterycategory/lotterycategory_20240124125606db4a.png",
+      route: findRoute(["trx"]),
+      tint: "rgba(255, 109, 0, 0.52)",
+    },
+  ];
+
   return (
-    <>
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">WELCOME BACK</p>
-          <h1>
-            Hello, {user.name?.split(" ")[0] || "Player"} <span>✦</span>
-          </h1>
-          <p>
-            Use the same games, wallet, rewards and team functions from one
-            responsive React experience.
-          </p>
-          <NavLink to="/games" className="primary">
-            Explore games <span>→</span>
-          </NavLink>
+    <div className="legacy-home">
+      <section className="legacy-banner">
+        <div className="legacy-banner-track">
+          {banners.map((src, index) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              className={index === bannerIndex ? "active" : ""}
+              onError={(event) => {
+                event.currentTarget.style.display = "none";
+              }}
+            />
+          ))}
         </div>
-        <img src="/banner/BANNER_7.jpg" alt="Legend Games" />
+        <div className="legacy-banner-dots">
+          {banners.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              aria-label={`Show banner ${index + 1}`}
+              className={index === bannerIndex ? "active" : ""}
+              onClick={() => setBannerIndex(index)}
+            />
+          ))}
+        </div>
       </section>
-      <Notice>
-        Existing artwork and navigation remain available. Every settled internal
-        round publishes a seed proof for its outcome.
-      </Notice>
-      <section className="quick-stats">
-        <NavLink to="/wallet">
-          <span>Wallet balance</span>
-          <strong>{inr(user.wallet?.total)}</strong>
-          <small>Manage funds →</small>
-        </NavLink>
-        <NavLink to="/rewards">
-          <span>Daily rewards</span>
-          <strong>Check in</strong>
-          <small>Open activity →</small>
-        </NavLink>
-        <NavLink to="/team">
-          <span>VIP level</span>
-          <strong>VIP {user.vipLevel}</strong>
-          <small>View team →</small>
-        </NavLink>
-      </section>
-      <section className="section-heading">
+
+      <section className="legacy-noticebar">
+        <span className="legacy-speaker">◖</span>
         <div>
-          <p className="eyebrow">PLAY NOW</p>
-          <h2>All game families</h2>
+          Welcome to the Legend Games! Greetings, Gamers and Enthusiasts! Enjoy the
+          original game catalogue, activities, rewards and play-coin wallet.
         </div>
-        <NavLink to="/games">Open games →</NavLink>
+        <NavLink to="/notification">Detail</NavLink>
       </section>
-      <div className="game-grid home-games">
-        {games.slice(0, 6).map((game) => (
-          <NavLink className="game-card" to={`/games/${game.id}`} key={game.id}>
-            <img src={game.image} alt="" />
-            <div>
-              <small>{game.category}</small>
-              <h3>{game.name}</h3>
-              <span>{game.external ? "Open provider →" : "Play now →"}</span>
-            </div>
+
+      <section className="legacy-account-strip">
+        <div>
+          <span>Play coin balance</span>
+          <strong>{inr(user.wallet?.total)}</strong>
+        </div>
+        <NavLink to="/wallet">Wallet</NavLink>
+      </section>
+
+      <section className="legacy-game-menu" id="popular">
+        {categoryTiles.map((tile) => {
+          const content = (
+            <>
+              <img className="legacy-category-bg" src={tile.background} alt="" />
+              <img className="legacy-category-icon" src={tile.icon} alt="" />
+              <span>{tile.name}</span>
+            </>
+          );
+          const className = tile.wide
+            ? "legacy-category-tile legacy-category-wide"
+            : "legacy-category-tile";
+          return tile.target.startsWith("#") ? (
+            <a href={tile.target} className={className} key={tile.name}>
+              {content}
+            </a>
+          ) : (
+            <NavLink to={tile.target} className={className} key={tile.name}>
+              {content}
+            </NavLink>
+          );
+        })}
+      </section>
+
+      <section className="legacy-game-section" id="lottery">
+        <div className="legacy-section-title">
+          <h2>Lottery</h2>
+          <NavLink to="/games">
+            All <span>{lotteryGames.length}</span> ›
           </NavLink>
-        ))}
-      </div>
-    </>
+        </div>
+        <div className="legacy-lottery-grid">
+          {lotteryGames.map((game) => (
+            <NavLink
+              to={game.route}
+              className="legacy-lottery-card"
+              style={{ background: game.tint }}
+              key={game.name}
+            >
+              <h3>{game.name}</h3>
+              <img src={game.image} alt="" />
+              <span>GO ›</span>
+            </NavLink>
+          ))}
+        </div>
+      </section>
+
+      <section className="legacy-game-section">
+        <div className="legacy-section-title">
+          <h2>Popular games</h2>
+          <NavLink to="/games">
+            All <span>{games.length}</span> ›
+          </NavLink>
+        </div>
+        <div className="legacy-popular-grid">
+          {games.slice(0, 8).map((game) => (
+            <NavLink to={`/games/${game.id}`} className="legacy-popular-card" key={game.id}>
+              <img src={game.image} alt="" />
+              <div>
+                <strong>{game.name}</strong>
+                <small>{game.category || "Game"}</small>
+              </div>
+            </NavLink>
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }
 
