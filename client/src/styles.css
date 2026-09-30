@@ -3218,3 +3218,307 @@ body {
   .royal-number-grid { gap: 7px; }
   .royal-stake-chips { gap: 4px; }
 }
+
+/* WINGO SELECTION BOTTOM SHEET */
+.royal-open-sheet-hint {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 15px;
+  padding: 9px 11px;
+  display: grid;
+  grid-template-columns: 34px 1fr 22px;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(216,184,106,.13);
+  border-radius: 14px;
+  color: #d8dce4;
+  text-align: left;
+  background: linear-gradient(135deg, rgba(216,184,106,.045), rgba(255,255,255,.015));
+}
+.royal-open-sheet-hint > span {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--crown-gold-2);
+  background: rgba(216,184,106,.08);
+}
+.royal-open-sheet-hint > div {
+  display: grid;
+  gap: 2px;
+}
+.royal-open-sheet-hint small {
+  color: #777f8b;
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 1.15px;
+}
+.royal-open-sheet-hint strong {
+  overflow: hidden;
+  color: #f3efe7;
+  font-size: 9px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.royal-open-sheet-hint > b {
+  color: var(--crown-gold);
+  font-size: 16px;
+  text-align: center;
+}
+.royal-open-sheet-hint:disabled {
+  opacity: .58;
+}
+
+.royal-sheet-backdrop {
+  position: fixed;
+  z-index: 140;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 0;
+  background: rgba(1, 2, 4, .72);
+  backdrop-filter: blur(5px);
+}
+
+.royal-selection-sheet {
+  position: relative;
+  width: min(100%, var(--crown-frame));
+  max-height: 78vh;
+  padding: 10px 16px calc(18px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  border: 1px solid rgba(216,184,106,.18);
+  border-bottom: 0;
+  border-radius: 24px 24px 0 0;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(216,184,106,.08), transparent 15rem),
+    #11141b;
+  box-shadow: 0 -22px 55px rgba(0,0,0,.5);
+  animation: royalSheetUp .22s ease-out both;
+}
+
+@keyframes royalSheetUp {
+  from {
+    transform: translateY(100%);
+    opacity: .75;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.royal-sheet-handle {
+  width: 42px;
+  height: 4px;
+  margin: 1px auto 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.16);
+}
+
+.royal-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.royal-sheet-header > div {
+  display: grid;
+  gap: 3px;
+}
+
+.royal-sheet-header small {
+  color: var(--crown-gold);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 1.35px;
+}
+
+.royal-sheet-header strong {
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.royal-sheet-close {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 11px;
+  color: #a1a7b0;
+  font-size: 21px;
+  background: #0b0e13;
+}
+
+.royal-sheet-selection {
+  margin-top: 14px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255,255,255,.055);
+  border-radius: 15px;
+  background: #0d1016;
+}
+
+.royal-sheet-selection > div {
+  display: grid;
+  gap: 2px;
+}
+
+.royal-sheet-selection small,
+.royal-sheet-round small {
+  color: #686f7a;
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.royal-sheet-selection strong {
+  color: #f5f2eb;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.royal-sheet-round {
+  justify-items: end;
+  text-align: right;
+}
+
+.royal-sheet-round strong {
+  max-width: 90px;
+  overflow: hidden;
+  color: var(--crown-gold-2);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.royal-sheet-color,
+.royal-sheet-number {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.royal-sheet-color {
+  border: 1px solid rgba(255,255,255,.08);
+  background: #11151c;
+}
+
+.royal-sheet-color i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+
+.royal-sheet-color.green i {
+  background: #2bb77c;
+  box-shadow: 0 0 0 7px rgba(43,183,124,.1);
+}
+.royal-sheet-color.red i {
+  background: #e35a64;
+  box-shadow: 0 0 0 7px rgba(227,90,100,.1);
+}
+.royal-sheet-color.violet i {
+  background: #9a58cf;
+  box-shadow: 0 0 0 7px rgba(154,88,207,.1);
+}
+
+.royal-sheet-number {
+  padding: 4px;
+  border: 1px solid rgba(216,184,106,.18);
+  background: #090c11;
+}
+.royal-sheet-number b {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+}
+.royal-sheet-number.number-green b {
+  background: linear-gradient(145deg, #2bb77c, #16724e);
+}
+.royal-sheet-number.number-red b {
+  background: linear-gradient(145deg, #e35a64, #96363e);
+}
+.royal-sheet-number.number-violet b {
+  box-shadow: inset -9px -9px 0 rgba(138,73,181,.52);
+}
+
+.royal-sheet-balance {
+  margin-top: 10px;
+  padding: 9px 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 12px;
+  background: rgba(216,184,106,.045);
+}
+.royal-sheet-balance span {
+  color: #818995;
+  font-size: 7px;
+  font-weight: 800;
+}
+.royal-sheet-balance strong {
+  color: var(--crown-gold-2);
+  font-size: 12px;
+}
+
+.royal-sheet-stake {
+  margin-top: 13px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.royal-sheet-actions {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 8px;
+}
+
+.royal-sheet-cancel {
+  min-height: 48px;
+  border: 1px solid rgba(255,255,255,.075);
+  border-radius: 14px;
+  color: #aab0ba;
+  font-size: 10px;
+  font-weight: 800;
+  background: #0c0f15;
+}
+
+.royal-sheet-confirm {
+  margin: 0;
+}
+
+.royal-selection-sheet .error,
+.royal-selection-sheet .success {
+  margin: 9px 0 0;
+  font-size: 9px;
+  text-align: center;
+}
+
+@media (max-width: 360px) {
+  .royal-selection-sheet {
+    padding-inline: 13px;
+  }
+  .royal-sheet-selection {
+    grid-template-columns: 42px 1fr auto;
+  }
+  .royal-sheet-actions {
+    grid-template-columns: 82px 1fr;
+  }
+}
