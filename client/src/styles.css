@@ -2642,3 +2642,579 @@ body {
     min-height: 82px !important;
   }
 }
+
+/* PREMIUM WINGO MOBILE GAME */
+.royal-wingo-page {
+  margin: -4px -2px 0;
+  padding: 0 0 18px;
+}
+.royal-game-toolbar {
+  height: 48px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 42px 1fr 58px;
+  align-items: center;
+}
+.royal-back {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(216,184,106,.15);
+  border-radius: 12px;
+  color: var(--crown-gold-2);
+  font-size: 29px;
+  line-height: 1;
+  background: rgba(255,255,255,.025);
+}
+.royal-game-title {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+.royal-game-title small {
+  color: var(--crown-gold);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+.royal-game-title strong {
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 600;
+}
+.royal-history-link {
+  justify-self: end;
+  color: var(--crown-muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+.royal-balance-card {
+  min-height: 70px;
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(216,184,106,.18);
+  border-radius: 17px;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(216,184,106,.12), transparent 45%),
+    linear-gradient(145deg, #171a22, #101218);
+}
+.royal-balance-card > div {
+  display: grid;
+  gap: 3px;
+}
+.royal-balance-card small {
+  color: var(--crown-muted);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 1.6px;
+}
+.royal-balance-card strong {
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 23px;
+  font-weight: 600;
+}
+.royal-balance-card a {
+  padding: 8px 12px;
+  border: 1px solid rgba(242,221,162,.25);
+  border-radius: 11px;
+  color: #17120a;
+  font-size: 9px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #f1d990, #c9a34f);
+}
+.royal-duration-tabs {
+  margin: 10px 0;
+  padding: 4px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  border: 1px solid rgba(255,255,255,.055);
+  border-radius: 15px;
+  background: #101319;
+}
+.royal-duration-tabs a {
+  min-height: 47px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: #7f8794;
+}
+.royal-duration-tabs a span {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+.royal-duration-tabs a small {
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.royal-duration-tabs a.active {
+  border-color: rgba(216,184,106,.23);
+  color: var(--crown-gold-2);
+  background: linear-gradient(145deg, rgba(216,184,106,.12), rgba(216,184,106,.035));
+}
+.royal-round-card {
+  position: relative;
+  min-height: 135px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px 16px;
+  overflow: hidden;
+  border: 1px solid rgba(216,184,106,.16);
+  border-radius: 19px;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(216,184,106,.12), transparent 42%),
+    #11141b;
+}
+.royal-round-card::after {
+  content: "♛";
+  position: absolute;
+  right: 16px;
+  bottom: -35px;
+  color: rgba(216,184,106,.035);
+  font-size: 118px;
+  line-height: 1;
+  pointer-events: none;
+}
+.royal-round-copy,
+.royal-countdown {
+  position: relative;
+  z-index: 1;
+}
+.royal-round-copy {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+.royal-round-copy small,
+.royal-countdown small {
+  color: var(--crown-muted);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 1.35px;
+}
+.royal-round-copy strong {
+  max-width: 150px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.royal-round-copy span {
+  color: var(--crown-gold);
+  font-size: 9px;
+  font-weight: 700;
+}
+.royal-countdown {
+  display: grid;
+  justify-items: end;
+  align-content: start;
+  gap: 5px;
+}
+.royal-countdown > div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.royal-countdown > div span {
+  min-width: 33px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(242,221,162,.22);
+  border-radius: 10px;
+  color: #151008;
+  font-size: 17px;
+  font-weight: 900;
+  background: linear-gradient(145deg, #f1dc9d, #cba752);
+}
+.royal-countdown i {
+  color: var(--crown-gold-2);
+  font-style: normal;
+  font-weight: 900;
+}
+.royal-round-seed {
+  position: relative;
+  z-index: 1;
+  grid-column: 1 / -1;
+  padding-top: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,.055);
+}
+.royal-round-seed span {
+  color: #7f8792;
+  font-size: 7px;
+  font-weight: 700;
+}
+.royal-round-seed code {
+  max-width: 185px;
+  overflow: hidden;
+  color: #9298a3;
+  font-family: inherit;
+  font-size: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.royal-result-strip {
+  margin-top: 10px;
+  padding: 13px 12px 11px;
+  border: 1px solid rgba(255,255,255,.055);
+  border-radius: 17px;
+  background: #101319;
+}
+.royal-section-mini {
+  margin-bottom: 11px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+}
+.royal-section-mini > div {
+  display: grid;
+  gap: 2px;
+}
+.royal-section-mini small {
+  color: var(--crown-gold);
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+}
+.royal-section-mini strong {
+  color: #f3f1eb;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+.royal-section-mini a {
+  color: #7f8793;
+  font-size: 8px;
+}
+.royal-result-row {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+}
+.royal-result-item {
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+.royal-result-ball {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(255,255,255,.09);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,.12);
+}
+.royal-result-item small {
+  max-width: 100%;
+  overflow: hidden;
+  color: #646b77;
+  font-size: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.result-green { background: linear-gradient(145deg, #29b77b, #13734d); }
+.result-red { background: linear-gradient(145deg, #e35b64, #96333a); }
+.result-violet { background: linear-gradient(145deg, #a15ad7, #63318c); }
+.result-red.result-violet {
+  background: linear-gradient(135deg, #d6535d 0 48%, #8444af 52% 100%);
+}
+.result-green.result-violet {
+  background: linear-gradient(135deg, #29a875 0 48%, #8444af 52% 100%);
+}
+.royal-result-empty {
+  grid-column: 1 / -1;
+  padding: 8px 0;
+  color: #6f7681;
+  font-size: 9px;
+  text-align: center;
+}
+.royal-play-card {
+  margin-top: 10px;
+  padding: 15px;
+  border: 1px solid rgba(216,184,106,.14);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(216,184,106,.025), transparent 30%),
+    #11141b;
+}
+.royal-card-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+.royal-card-heading > div {
+  display: grid;
+  gap: 3px;
+}
+.royal-card-heading small {
+  color: var(--crown-gold);
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+}
+.royal-card-heading strong {
+  color: #f5f2eb;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  font-weight: 600;
+}
+.royal-card-heading > span {
+  padding: 5px 7px;
+  border: 1px solid rgba(216,184,106,.14);
+  border-radius: 9px;
+  color: #92805a;
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  background: rgba(216,184,106,.045);
+}
+.royal-color-row {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.royal-color-choice {
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 13px;
+  color: #c9ced6;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: capitalize;
+  background: #0d1016;
+}
+.royal-color-choice > span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.royal-color-choice.green > span {
+  background: #2bb77c;
+  box-shadow: 0 0 0 4px rgba(43,183,124,.09);
+}
+.royal-color-choice.red > span {
+  background: #e35a64;
+  box-shadow: 0 0 0 4px rgba(227,90,100,.09);
+}
+.royal-color-choice.violet > span {
+  background: #9a58cf;
+  box-shadow: 0 0 0 4px rgba(154,88,207,.09);
+}
+.royal-color-choice.green.selected {
+  border-color: rgba(43,183,124,.5);
+  color: #d9fff0;
+  background: rgba(43,183,124,.11);
+}
+.royal-color-choice.red.selected {
+  border-color: rgba(227,90,100,.5);
+  color: #ffe2e4;
+  background: rgba(227,90,100,.11);
+}
+.royal-color-choice.violet.selected {
+  border-color: rgba(154,88,207,.5);
+  color: #f2e1ff;
+  background: rgba(154,88,207,.11);
+}
+.royal-number-grid {
+  margin-top: 13px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 9px;
+}
+.royal-number-choice {
+  aspect-ratio: 1;
+  padding: 4px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.055);
+  border-radius: 50%;
+  background: #0b0e13;
+}
+.royal-number-choice > span {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+}
+.number-green > span { background: linear-gradient(145deg, #2bb77c, #16724e); }
+.number-red > span { background: linear-gradient(145deg, #e35a64, #96363e); }
+.number-violet > span { box-shadow: inset -10px -10px 0 rgba(138,73,181,.52); }
+.royal-number-choice.selected {
+  border-color: var(--crown-gold-2);
+  box-shadow: 0 0 0 3px rgba(216,184,106,.11);
+  transform: translateY(-1px);
+}
+.royal-stake-block {
+  margin-top: 15px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.055);
+}
+.royal-stake-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.royal-stake-label span {
+  color: #8d949f;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 1.3px;
+}
+.royal-stake-label strong {
+  color: var(--crown-gold-2);
+  font-size: 15px;
+}
+.royal-stake-chips {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+.royal-stake-chips button {
+  min-height: 33px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.065);
+  border-radius: 10px;
+  color: #a3a9b3;
+  font-size: 9px;
+  font-weight: 800;
+  background: #0c0f15;
+}
+.royal-stake-chips button.active {
+  border-color: rgba(216,184,106,.36);
+  color: #17120a;
+  background: linear-gradient(135deg, #eed58d, #caa44f);
+}
+.royal-custom-stake {
+  margin-top: 9px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.royal-custom-stake > span {
+  color: #7f8792;
+  font-size: 8px;
+}
+.royal-custom-stake input {
+  min-height: 38px !important;
+  padding: 8px 11px !important;
+  text-align: right;
+  font-size: 11px !important;
+}
+.royal-selection-summary {
+  margin: 13px 0;
+  padding: 10px 11px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 13px;
+  background: #0d1016;
+}
+.royal-selection-summary > div {
+  display: grid;
+  gap: 2px;
+}
+.royal-selection-summary > div:last-child {
+  justify-items: end;
+  text-align: right;
+}
+.royal-selection-summary small {
+  color: #686f7a;
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.royal-selection-summary strong {
+  max-width: 150px;
+  overflow: hidden;
+  color: #e5e1d9;
+  font-size: 10px;
+  text-transform: capitalize;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.royal-play-button {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid rgba(242,221,162,.35);
+  border-radius: 14px;
+  color: #17120a;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  background: linear-gradient(135deg, #f1db9a, #c69e48);
+  box-shadow: 0 8px 22px rgba(0,0,0,.2);
+}
+.royal-play-button > span { font-size: 16px; }
+.royal-play-button:disabled {
+  opacity: .42;
+  filter: grayscale(.25);
+}
+.royal-play-card .error,
+.royal-play-card .success {
+  margin-top: 9px;
+  font-size: 9px;
+  text-align: center;
+}
+.royal-rules-note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  border: 1px solid rgba(255,255,255,.045);
+  border-radius: 14px;
+  background: rgba(255,255,255,.015);
+}
+.royal-rules-note > span {
+  color: var(--crown-gold);
+  font-size: 14px;
+}
+.royal-rules-note p {
+  margin: 0;
+  color: #727985;
+  font-size: 8px;
+  line-height: 1.55;
+}
+@media (max-width: 360px) {
+  .royal-round-card { padding: 14px 12px; }
+  .royal-result-row { gap: 3px; }
+  .royal-result-ball { width: 28px; height: 28px; }
+  .royal-number-grid { gap: 7px; }
+  .royal-stake-chips { gap: 4px; }
+}
