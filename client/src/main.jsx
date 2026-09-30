@@ -680,6 +680,7 @@ function GamePage() {
   const [message, setMessage] = useState("");
   const [amount, setAmount] = useState(10);
   const [choice, setChoice] = useState("");
+  const [selectionSheetOpen, setSelectionSheetOpen] = useState(false);
   const [clock, setClock] = useState(Date.now());
 
   const reload = useCallback(async () => {
@@ -746,6 +747,7 @@ function GamePage() {
         body: { selection: choice, amount: Number(amount) },
       });
       setMessage(`Play confirmed for ${response.round.period}.`);
+      setSelectionSheetOpen(false);
       await refresh();
       await reload();
     } catch (error) {
@@ -776,6 +778,18 @@ function GamePage() {
   const timerMinute = String(Math.floor(seconds / 60)).padStart(2, "0");
   const timerSecond = String(seconds % 60).padStart(2, "0");
   const isWingo = active.kind === "wingo";
+
+  const openSelectionSheet = (value) => {
+    setChoice(value);
+    setMessage("");
+    setSelectionSheetOpen(true);
+  };
+
+  const closeSelectionSheet = () => {
+    if (busy) return;
+    setSelectionSheetOpen(false);
+    setMessage("");
+  };
 
   const numberTone = (value) => {
     const number = Number(value);
@@ -886,7 +900,7 @@ function GamePage() {
                 key={item}
                 type="button"
                 className={`royal-color-choice ${item} ${choice === item ? "selected" : ""}`}
-                onClick={() => setChoice(item)}
+                onClick={() => openSelectionSheet(item)}
               >
                 <span />
                 {item}
@@ -900,69 +914,144 @@ function GamePage() {
                 key={item}
                 type="button"
                 className={`royal-number-choice ${numberTone(item)} ${choice === item ? "selected" : ""}`}
-                onClick={() => setChoice(item)}
+                onClick={() => openSelectionSheet(item)}
               >
                 <span>{item}</span>
               </button>
             ))}
           </div>
 
-          <div className="royal-stake-block">
-            <div className="royal-stake-label">
-              <span>PLAY AMOUNT</span>
-              <strong>{Number(amount || 0).toLocaleString("en-IN")}</strong>
-            </div>
-            <div className="royal-stake-chips">
-              {[10, 50, 100, 500, 1000].map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  className={Number(amount) === value ? "active" : ""}
-                  onClick={() => setAmount(value)}
-                >
-                  {value}
-                </button>
-              ))}
-            </div>
-            <label className="royal-custom-stake">
-              <span>Custom</span>
-              <input
-                type="number"
-                min="10"
-                step="10"
-                value={amount}
-                onChange={(event) => setAmount(event.target.value)}
-                inputMode="numeric"
-              />
-            </label>
-          </div>
-
-          <div className="royal-selection-summary">
-            <div>
-              <small>SELECTION</small>
-              <strong>{choice || "Choose one"}</strong>
-            </div>
-            <div>
-              <small>ROUND</small>
-              <strong>{periodShort}</strong>
-            </div>
-          </div>
-
           <button
-            className="royal-play-button"
-            disabled={busy || seconds === 0 || !choice || Number(amount) < 10}
-            onClick={bet}
+            type="button"
+            className="royal-open-sheet-hint"
+            onClick={() => choice && setSelectionSheetOpen(true)}
+            disabled={!choice}
           >
-            <span>♛</span>
-            {busy
-              ? "Confirming…"
-              : seconds === 0
-                ? "Waiting for next round"
-                : `Confirm ${Number(amount || 0).toLocaleString("en-IN")} PLAY`}
+            <span>◇</span>
+            <div>
+              <small>TAP A COLOR OR NUMBER</small>
+              <strong>
+                {choice ? `Selected: ${choice}` : "Selection opens the PLAY sheet"}
+              </strong>
+            </div>
+            <b>↑</b>
           </button>
-
-          <Message error={isFailure(message)}>{message}</Message>
         </section>
+
+        {selectionSheetOpen && (
+          <div
+            className="royal-sheet-backdrop"
+            role="presentation"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) closeSelectionSheet();
+            }}
+          >
+            <section
+              className="royal-selection-sheet"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Choose PLAY amount"
+            >
+              <div className="royal-sheet-handle" />
+              <header className="royal-sheet-header">
+                <div>
+                  <small>WIN GO {active.id.match(/-(\d+)m$/)?.[1] || "1"} MIN</small>
+                  <strong>Confirm your prediction</strong>
+                </div>
+                <button
+                  type="button"
+                  className="royal-sheet-close"
+                  onClick={closeSelectionSheet}
+                  disabled={busy}
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </header>
+
+              <div className="royal-sheet-selection">
+                <span
+                  className={
+                    /^[0-9]$/.test(choice)
+                      ? `royal-sheet-number ${numberTone(choice)}`
+                      : `royal-sheet-color ${choice}`
+                  }
+                >
+                  {/^[0-9]$/.test(choice) ? <b>{choice}</b> : <i />}
+                </span>
+                <div>
+                  <small>YOUR SELECTION</small>
+                  <strong>{choice}</strong>
+                </div>
+                <div className="royal-sheet-round">
+                  <small>ROUND</small>
+                  <strong>{periodShort}</strong>
+                </div>
+              </div>
+
+              <div className="royal-sheet-balance">
+                <span>Available PLAY</span>
+                <strong>{playBalance}</strong>
+              </div>
+
+              <div className="royal-stake-block royal-sheet-stake">
+                <div className="royal-stake-label">
+                  <span>PLAY AMOUNT</span>
+                  <strong>{Number(amount || 0).toLocaleString("en-IN")}</strong>
+                </div>
+                <div className="royal-stake-chips">
+                  {[10, 50, 100, 500, 1000].map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={Number(amount) === value ? "active" : ""}
+                      onClick={() => setAmount(value)}
+                    >
+                      {value}
+                    </button>
+                  ))}
+                </div>
+                <label className="royal-custom-stake">
+                  <span>Custom amount</span>
+                  <input
+                    type="number"
+                    min="10"
+                    step="10"
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                    inputMode="numeric"
+                  />
+                </label>
+              </div>
+
+              <div className="royal-sheet-actions">
+                <button
+                  type="button"
+                  className="royal-sheet-cancel"
+                  onClick={closeSelectionSheet}
+                  disabled={busy}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="royal-play-button royal-sheet-confirm"
+                  disabled={busy || seconds === 0 || !choice || Number(amount) < 10}
+                  onClick={bet}
+                >
+                  <span>♛</span>
+                  {busy
+                    ? "Confirming…"
+                    : seconds === 0
+                      ? "Next round"
+                      : `Confirm ${Number(amount || 0).toLocaleString("en-IN")} PLAY`}
+                </button>
+              </div>
+
+              <Message error={isFailure(message)}>{message}</Message>
+            </section>
+          </div>
+        )}
 
         <section className="royal-rules-note">
           <span>◇</span>
