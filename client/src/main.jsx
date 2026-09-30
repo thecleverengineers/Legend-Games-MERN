@@ -89,75 +89,67 @@ function isFailure(message) {
 function AppShell() {
   const { user } = useAuth();
   const nav = [
-    ["/", "/images/home.png", "Home"],
-    ["/rewards", "/images/checkIn.png", "Activity"],
-    ["/team", "/images/invite.webp", "Promotion"],
-    ["/wallet", "/images/wallet2.png", "Wallet"],
-    ["/profile", "/images/me2.png", "Account"],
+    ["/", "⌂", "Home"],
+    ["/rewards", "✦", "Activity"],
+    ["/team", "♛", "Royal"],
+    ["/wallet", "◇", "Wallet"],
+    ["/profile", "◉", "Account"],
   ];
 
   return (
-    <main className="legacy-react-shell">
-      <header className="legacy-navbar">
-        <NavLink to="/" className="legacy-navbar-logo" aria-label="Legend Games home">
-          <img
-            src="/h5setting_202308141709544lm1.png"
-            alt="Legend Games"
-            onError={(event) => {
-              event.currentTarget.src = "/images/headlogo.png";
-            }}
-          />
+    <main className="legacy-react-shell crown-shell">
+      <header className="legacy-navbar crown-navbar">
+        <NavLink to="/" className="crown-brand" aria-label="Legend Games home">
+          <span className="crown-brand-mark">♛</span>
+          <span className="crown-brand-copy">
+            <strong>LEGEND</strong>
+            <small>ROYAL GAMES</small>
+          </span>
         </NavLink>
-        <div className="legacy-navbar-spacer" />
-        <NavLink
-          to="/notification"
-          className="legacy-notification"
-          aria-label="Notifications"
-          title="Notifications"
-        >
-          <span>♢</span>
-          <i />
-        </NavLink>
+
+        <div className="crown-header-actions">
+          <NavLink to="/wallet" className="crown-balance" aria-label="Wallet">
+            <small>PLAY</small>
+            <strong>{inr(user.wallet?.total)}</strong>
+          </NavLink>
+          <NavLink
+            to="/notification"
+            className="legacy-notification crown-notification"
+            aria-label="Notifications"
+            title="Notifications"
+          >
+            <span>◇</span>
+            <i />
+          </NavLink>
+        </div>
       </header>
 
-      <section className="legacy-page-content">
+      <section className="legacy-page-content crown-page-content">
         <Outlet />
       </section>
 
-      <NavLink to="/support" className="legacy-customer-service" aria-label="Support">
-        <img
-          src="/assets/png/icon_sevice-8a1f5628.png"
-          alt=""
-          onError={(event) => {
-            event.currentTarget.style.display = "none";
-          }}
-        />
+      <NavLink
+        to="/support"
+        className="legacy-customer-service crown-support"
+        aria-label="Support"
+      >
         <span>?</span>
       </NavLink>
 
-      <nav className="legacy-tabbar" aria-label="Main navigation">
+      <nav className="legacy-tabbar crown-tabbar" aria-label="Main navigation">
         {nav.map(([to, icon, label], index) => (
           <NavLink
             key={label}
             to={to}
             end={to === "/"}
-            className={index === 2 ? "legacy-tab legacy-tab-promotion" : "legacy-tab"}
+            className={index === 2 ? "legacy-tab crown-tab crown-tab-royal" : "legacy-tab crown-tab"}
           >
-            <span className="legacy-tab-icon">
-              <img
-                src={icon}
-                alt=""
-                onError={(event) => {
-                  event.currentTarget.style.display = "none";
-                }}
-              />
-              <b>{index === 0 ? "⌂" : index === 1 ? "☆" : index === 2 ? "◆" : index === 3 ? "▣" : "●"}</b>
-            </span>
+            <span className="legacy-tab-icon crown-tab-icon">{icon}</span>
             <small>{label}</small>
           </NavLink>
         ))}
         {staffRoles.includes(user?.role) && (
-          <NavLink to="/admin" className="legacy-staff-shortcut" title="Staff">
+          <NavLink to="/admin" className="legacy-staff-shortcut crown-staff" title="Staff">
             ▦
           </NavLink>
         )}
@@ -549,7 +541,14 @@ function HomePage() {
   ];
 
   return (
-    <div className="legacy-home">
+    <div className="legacy-home crown-home">
+      <div className="crown-home-intro">
+        <span>♛</span>
+        <div>
+          <small>ROYAL COLLECTION</small>
+          <strong>Play in signature style</strong>
+        </div>
+      </div>
       <section className="legacy-banner">
         <div className="legacy-banner-track">
           {banners.map((src, index) => (
