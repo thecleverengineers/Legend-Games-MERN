@@ -673,6 +673,7 @@ function outcomeLabel(outcome) {
 function GamePage() {
   const { game: requestedGame } = useParams();
   const { user, refresh } = useAuth();
+  const navigate = useNavigate();
   const [data, setData] = useState({ games: [], rounds: [] });
   const [history, setHistory] = useState([]);
   const [busy, setBusy] = useState(false);
@@ -680,25 +681,31 @@ function GamePage() {
   const [amount, setAmount] = useState(10);
   const [choice, setChoice] = useState("");
   const [clock, setClock] = useState(Date.now());
+
   const reload = useCallback(async () => {
     const payload = await api("/games");
     setData(payload);
   }, []);
+
   useEffect(() => {
     reload().catch((error) => setMessage(error.message));
     const timer = setInterval(() => reload().catch(() => {}), 12_000);
     return () => clearInterval(timer);
   }, [reload]);
+
   useEffect(() => {
     const timer = setInterval(() => setClock(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
+
   const active =
     data.games.find((item) => item.id === requestedGame) ||
     data.games.find((item) => !item.external);
+
   useEffect(() => {
     if (active) setChoice(defaultChoice(active));
   }, [active?.id]);
+
   useEffect(() => {
     if (!active || active.external) {
       setHistory([]);
@@ -714,12 +721,14 @@ function GamePage() {
       cancelled = true;
     };
   }, [active?.id]);
+
   if (!active)
     return (
       <div className="loading-screen">
         <Spinner />
       </div>
     );
+
   const round = data.rounds.find((item) => item.game === active.id);
   const seconds = round
     ? Math.max(
@@ -727,6 +736,7 @@ function GamePage() {
         Math.ceil((new Date(round.closesAt).getTime() - clock) / 1000),
       )
     : 0;
+
   const bet = async () => {
     setBusy(true);
     setMessage("");
@@ -735,7 +745,7 @@ function GamePage() {
         method: "POST",
         body: { selection: choice, amount: Number(amount) },
       });
-      setMessage(`Bet accepted for ${response.round.period}.`);
+      setMessage(`Play confirmed for ${response.round.period}.`);
       await refresh();
       await reload();
     } catch (error) {
@@ -744,6 +754,7 @@ function GamePage() {
       setBusy(false);
     }
   };
+
   const launch = async () => {
     setBusy(true);
     setMessage("");
@@ -759,15 +770,216 @@ function GamePage() {
       setBusy(false);
     }
   };
+
+  const playBalance = Number(user.wallet?.total || 0).toLocaleString("en-IN");
+  const periodShort = round?.period?.split("-").at(-1) || "—";
+  const timerMinute = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const timerSecond = String(seconds % 60).padStart(2, "0");
+  const isWingo = active.kind === "wingo";
+
+  const numberTone = (value) => {
+    const number = Number(value);
+    if (number === 0) return "number-red number-violet";
+    if (number === 5) return "number-green number-violet";
+    return number % 2 === 0 ? "number-red" : "number-green";
+  };
+
+  const resultTone = (item) => {
+    const colors = item?.outcome?.colors || [];
+    if (colors.includes("violet") && colors.includes("red"))
+      return "result-red result-violet";
+    if (colors.includes("violet") && colors.includes("green"))
+      return "result-green result-violet";
+    if (colors.includes("violet")) return "result-violet";
+    if (colors.includes("red")) return "result-red";
+    return "result-green";
+  };
+
+  if (isWingo) {
+    const variants = data.games.filter((game) => game.id?.startsWith("wingo-"));
+    const colors = ["green", "violet", "red"];
+    const numbers = Array.from({ length: 10 }, (_, index) => String(index));
+
+    return (
+      <div className="royal-wingo-page">
+        <div className="royal-game-toolbar">
+          <button type="button" className="royal-back" onClick={() => navigate("/")} aria-label="Back">
+            ‹
+          </button>
+          <div className="royal-game-title">
+            <small>♛ ROYAL LOTTERY</small>
+            <strong>Win Go</strong>
+          </div>
+          <NavLink to="/history" className="royal-history-link">History</NavLink>
+        </div>
+
+        <section className="royal-balance-card">
+          <div>
+            <small>PLAY BALANCE</small>
+            <strong>{playBalance}</strong>
+          </div>
+          <NavLink to="/wallet">Wallet</NavLink>
+        </section>
+
+        <nav className="royal-duration-tabs" aria-label="Win Go duration">
+          {variants.map((game) => (
+            <NavLink key={game.id} to={`/games/${game.id}`} className={({ isActive }) => (isActive ? "active" : "")}>
+              <span>{game.id.match(/-(\d+)m$/)?.[1] || "1"}</span>
+              <small>MIN</small>
+            </NavLink>
+          ))}
+        </nav>
+
+        <section className="royal-round-card">
+          <div className="royal-round-copy">
+            <small>CURRENT ROUND</small>
+            <strong>{periodShort}</strong>
+            <span>{active.name}</span>
+          </div>
+          <div className="royal-countdown">
+            <small>TIME LEFT</small>
+            <div>
+              <span>{timerMinute}</span>
+              <i>:</i>
+              <span>{timerSecond}</span>
+            </div>
+          </div>
+          <div className="royal-round-seed">
+            <span>Fair seed</span>
+            <code>{round?.serverSeedHash?.slice(0, 18) || "Preparing round"}…</code>
+          </div>
+        </section>
+
+        <section className="royal-result-strip">
+          <div className="royal-section-mini">
+            <div>
+              <small>RECENT RESULTS</small>
+              <strong>Last rounds</strong>
+            </div>
+            <NavLink to="/history">View all</NavLink>
+          </div>
+          <div className="royal-result-row">
+            {history.slice(0, 8).map((item) => (
+              <div className="royal-result-item" key={item.id}>
+                <span className={`royal-result-ball ${resultTone(item)}`}>
+                  {item.outcome?.number ?? "–"}
+                </span>
+                <small>{item.period?.split("-").at(-1)?.slice(-4)}</small>
+              </div>
+            ))}
+            {!history.length && <span className="royal-result-empty">No settled rounds yet</span>}
+          </div>
+        </section>
+
+        <section className="royal-play-card">
+          <div className="royal-card-heading">
+            <div>
+              <small>SELECT A PREDICTION</small>
+              <strong>Choose color or number</strong>
+            </div>
+            <span>PLAY only</span>
+          </div>
+
+          <div className="royal-color-row">
+            {colors.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={`royal-color-choice ${item} ${choice === item ? "selected" : ""}`}
+                onClick={() => setChoice(item)}
+              >
+                <span />
+                {item}
+              </button>
+            ))}
+          </div>
+
+          <div className="royal-number-grid">
+            {numbers.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={`royal-number-choice ${numberTone(item)} ${choice === item ? "selected" : ""}`}
+                onClick={() => setChoice(item)}
+              >
+                <span>{item}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="royal-stake-block">
+            <div className="royal-stake-label">
+              <span>PLAY AMOUNT</span>
+              <strong>{Number(amount || 0).toLocaleString("en-IN")}</strong>
+            </div>
+            <div className="royal-stake-chips">
+              {[10, 50, 100, 500, 1000].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={Number(amount) === value ? "active" : ""}
+                  onClick={() => setAmount(value)}
+                >
+                  {value}
+                </button>
+              ))}
+            </div>
+            <label className="royal-custom-stake">
+              <span>Custom</span>
+              <input
+                type="number"
+                min="10"
+                step="10"
+                value={amount}
+                onChange={(event) => setAmount(event.target.value)}
+                inputMode="numeric"
+              />
+            </label>
+          </div>
+
+          <div className="royal-selection-summary">
+            <div>
+              <small>SELECTION</small>
+              <strong>{choice || "Choose one"}</strong>
+            </div>
+            <div>
+              <small>ROUND</small>
+              <strong>{periodShort}</strong>
+            </div>
+          </div>
+
+          <button
+            className="royal-play-button"
+            disabled={busy || seconds === 0 || !choice || Number(amount) < 10}
+            onClick={bet}
+          >
+            <span>♛</span>
+            {busy
+              ? "Confirming…"
+              : seconds === 0
+                ? "Waiting for next round"
+                : `Confirm ${Number(amount || 0).toLocaleString("en-IN")} PLAY`}
+          </button>
+
+          <Message error={isFailure(message)}>{message}</Message>
+        </section>
+
+        <section className="royal-rules-note">
+          <span>◇</span>
+          <p>
+            This demo uses PLAY coins only. Round results are generated from the
+            published seed process already used by the application.
+          </p>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <>
       <PageHeader
-        title="Games"
-        action={
-          <span className="mode-pill">
-            {active.external ? "Provider" : "Live rounds"}
-          </span>
-        }
+        title={active.name}
+        action={<span className="mode-pill">{active.external ? "Provider" : "Live rounds"}</span>}
       />
       <div className="game-tabs">
         {data.games.map((game) => (
@@ -775,47 +987,36 @@ function GamePage() {
             key={game.id}
             to={`/games/${game.id}`}
             className={({ isActive }) =>
-              isActive || (!requestedGame && game.id === active.id)
-                ? "active"
-                : ""
+              isActive || (!requestedGame && game.id === active.id) ? "active" : ""
             }
           >
             {game.name}
           </NavLink>
         ))}
       </div>
+
       <section className="game-play">
         <div className="round-panel">
           <div>
             <p className="eyebrow">{active.category}</p>
             <h2>{active.name}</h2>
-            <p>
-              {active.external
-                ? "This keeps the existing provider catalogue. Launch becomes available as soon as licensed provider credentials are configured."
-                : "Choose your prediction before the current round closes."}
-            </p>
+            <p>{active.external ? "Provider catalogue" : "Choose your prediction before the current round closes."}</p>
           </div>
           <img src={active.image} alt="" />
           {!active.external && (
             <div className="round-status">
-              <span>
-                Period <b>{round?.period?.split("-").at(-1) || "—"}</b>
-              </span>
+              <span>Period <b>{periodShort}</b></span>
               <strong>{seconds}s</strong>
-              <span>
-                Seed <b>{round?.serverSeedHash?.slice(0, 10)}…</b>
-              </span>
+              <span>Seed <b>{round?.serverSeedHash?.slice(0, 10)}…</b></span>
             </div>
           )}
         </div>
+
         {active.external ? (
           <div className="integration-card">
             <span>◌</span>
             <h3>{active.shortName} catalogue</h3>
-            <p>
-              All original provider categories are retained. A configured
-              provider launch opens securely from this screen.
-            </p>
+            <p>Open the configured provider experience from this screen.</p>
             <button className="primary wide" disabled={busy} onClick={launch}>
               {busy ? "Opening…" : `Open ${active.shortName}`}
             </button>
@@ -823,37 +1024,25 @@ function GamePage() {
           </div>
         ) : (
           <div className="bet-panel">
-            <p className="eyebrow">PLACE A BET</p>
+            <p className="eyebrow">PLAY COINS</p>
             {active.kind === "five_d" ? (
               <>
                 <label>
                   Five digit number
                   <input
                     value={choice}
-                    onChange={(event) =>
-                      setChoice(
-                        event.target.value.replace(/\D/g, "").slice(0, 5),
-                      )
-                    }
+                    onChange={(event) => setChoice(event.target.value.replace(/\D/g, "").slice(0, 5))}
                     placeholder="00000"
                     inputMode="numeric"
                     maxLength="5"
                   />
                 </label>
                 <div className="choice-grid compact">
-                  {["00000", "12345", "54321", "position:0:0", "total:20"].map(
-                    (item) => (
-                      <button
-                        key={item}
-                        className={
-                          choice === item ? "choice active-choice" : "choice"
-                        }
-                        onClick={() => setChoice(item)}
-                      >
-                        {item.replace("position:", "P").replace("total:", "T")}
-                      </button>
-                    ),
-                  )}
+                  {["00000", "12345", "54321", "position:0:0", "total:20"].map((item) => (
+                    <button key={item} className={choice === item ? "choice active-choice" : "choice"} onClick={() => setChoice(item)}>
+                      {item.replace("position:", "P").replace("total:", "T")}
+                    </button>
+                  ))}
                 </div>
               </>
             ) : (
@@ -861,11 +1050,7 @@ function GamePage() {
                 {active.choices.map((item) => (
                   <button
                     key={item}
-                    className={
-                      choice === item
-                        ? `choice ${item} active-choice`
-                        : `choice ${item}`
-                    }
+                    className={choice === item ? `choice ${item} active-choice` : `choice ${item}`}
                     onClick={() => setChoice(item)}
                   >
                     {item}
@@ -875,41 +1060,24 @@ function GamePage() {
             )}
             <div className="amount-row">
               <label>
-                Stake
-                <input
-                  type="number"
-                  min="10"
-                  step="10"
-                  value={amount}
-                  onChange={(event) => setAmount(event.target.value)}
-                />
+                PLAY amount
+                <input type="number" min="10" step="10" value={amount} onChange={(event) => setAmount(event.target.value)} />
               </label>
               <div>
                 {[10, 50, 100, 500].map((value) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setAmount(value)}
-                  >
-                    ₹{value}
-                  </button>
+                  <button key={value} type="button" onClick={() => setAmount(value)}>{value}</button>
                 ))}
               </div>
             </div>
-            <button
-              className="primary wide"
-              disabled={busy || seconds === 0 || !choice}
-              onClick={bet}
-            >
-              {busy ? "Placing bet…" : `Bet ${inr(amount)}`}
+            <button className="primary wide" disabled={busy || seconds === 0 || !choice} onClick={bet}>
+              {busy ? "Confirming…" : `Confirm ${Number(amount || 0).toLocaleString("en-IN")} PLAY`}
             </button>
             <Message error={isFailure(message)}>{message}</Message>
-            <p className="balance-note">
-              Available balance: {inr(user.wallet?.total)}
-            </p>
+            <p className="balance-note">Available: {playBalance} PLAY</p>
           </div>
         )}
       </section>
+
       {!active.external && (
         <section className="history-panel">
           <div className="section-heading">
@@ -933,24 +1101,6 @@ function GamePage() {
           )}
         </section>
       )}
-      <section className="section-heading">
-        <div>
-          <p className="eyebrow">CATALOGUE</p>
-          <h2>All games</h2>
-        </div>
-      </section>
-      <div className="game-grid">
-        {data.games.map((game) => (
-          <NavLink className="game-card" to={`/games/${game.id}`} key={game.id}>
-            <img src={game.image} alt="" />
-            <div>
-              <small>{game.category}</small>
-              <h3>{game.name}</h3>
-              <span>{game.external ? "Open provider →" : "Open game →"}</span>
-            </div>
-          </NavLink>
-        ))}
-      </div>
     </>
   );
 }
