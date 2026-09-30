@@ -1,0 +1,52 @@
+{
+  "name": "legend-casino-mern",
+  "version": "2.0.0",
+  "description": "Legend Casino MERN migration",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "start:api": "node server/index.js",
+    "start:worker": "node server/worker.js",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:worker\" \"npm run dev:client\"",
+    "dev:api": "nodemon server/index.js",
+    "dev:worker": "nodemon server/worker.js",
+    "dev:client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "seed": "node server/scripts/seed.js",
+    "db:indexes": "node server/scripts/indexes.js",
+    "migrate:mysql": "node server/scripts/migrate-mysql.js",
+    "verify:package": "node server/scripts/verify-package.js",
+    "pm2:start": "pm2 start ecosystem.config.cjs --env production",
+    "pm2:reload": "pm2 reload ecosystem.config.cjs --env production",
+    "pm2:logs": "pm2 logs",
+    "lint": "npm run lint --prefix client",
+    "format:check": "prettier --check \"server/**/*.js\" \"client/**/*.{js,jsx,css}\"",
+    "format:write": "prettier --write \"server/**/*.js\" \"client/**/*.{js,jsx,css}\""
+  },
+  "author": "Ayush Kumar Singh",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.11.5",
+    "socket.io": "^4.8.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "concurrently": "^9.1.0",
+    "globals": "^15.14.0",
+    "nodemon": "^3.1.7",
+    "pm2": "^5.4.3",
+    "prettier": "3.3.3"
+  }
+}
